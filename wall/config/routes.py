@@ -14,9 +14,22 @@ def index():
 def createUser():
     return users.create(request.form)
 
+@app.route('/login', methods=['POST'])
+def login():
+    return users.login(request.form)
+
 @app.route('/wall')
 def wall():
     return messages.index()
-@app.route("/blue")
-def blah():
-    return "Hello Blue!"
+
+@app.route('/create_message', methods=['POST'])
+def writeMessage():
+    return messages.create(request.form)
+
+@app.route('/create_comment', methods=['POST'])
+def writeComment():
+    return messages.comment(request.form)
+    
+@app.route("/logout")
+def logout():
+    return users.logout()

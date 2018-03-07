@@ -8,7 +8,6 @@ bcrypt = Bcrypt(app)
 
 class User:
     def create(self, data):
-        print("models create", data)
         passRegex = re.compile(r'^(?=.{8,15}$)(?=.*[A-Z])(?=.*[0-9]).*$')
         emailRegex = re.compile(r'^[a-zA-Z0-9.+_-]+@[a-zA-Z0-9._-]+\.[a-zA-Z]+$')
         nameRegex = re.compile(r'^(?=.{2,})([a-zA-z]*)$')
@@ -26,12 +25,10 @@ class User:
         if data['password'] != data['confirm']:
             errors.append("Passwords must match")
         if len(errors)>0:
-            print("errors > 0")
             return (False, errors)
         else:
-            print("errors = 0")
             unique = mysql.query_db("SELECT * FROM users WHERE email = %s;", data['email'])
-            if len(unique) > 0:
+            if unique:
                 errors.append("This email has already been taken")
                 return (False, errors)
             else:
@@ -47,15 +44,22 @@ class User:
                 else:
                     errors.append("We're sorry, you could not be registered at this moment")
                     return (False, errors)
-
-
-    def retrieveAll(self):
-       
-        mysql.query_db("SELECT * FROM users;")
     
     def retrieveOneById(self, id):
         mysql.query_db("SELECT * FROM users WHERE id=%s;", id)
     
-    def update(self, data):
-        query = "UPDATE users SET first_name = %(first)s, last_name = %(last)s WHERE id=%(id)s;"
-        mysql.query_db(query, data)
+    def retrieveOneByEmail(self, data):
+        print("using this data", data['password'])
+        query = "SELECT * FROM users WHERE email = %(email)s"
+        emaildata = {"email" : data['email']}
+        result = mysql.query_db(query, emaildata)
+        if result:
+            if bcrypt.check_password_hash(result[0]['password'], data['password']):
+                print("checked out")
+                return (True, result[0]['first_name'], result[0]['id'])
+            else:
+                print("nope")
+                return (False, False)
+        else: 
+            return (False, False)
+        return result

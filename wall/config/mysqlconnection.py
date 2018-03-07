@@ -10,7 +10,6 @@ class MySQLConnection:
                                     cursorclass=pymysql.cursors.DictCursor)
         self.connection = connection
     def query_db(self, query, data=None):
-        print("The query", query)
         with self.connection.cursor() as cursor:
             try:
                 executable = cursor.execute(query, data)
@@ -24,6 +23,7 @@ class MySQLConnection:
                     self.connection.commit()
             except:
                 print("Something went wrong")
+                return False
 
 def connectToMySQL():
     return MySQLConnection()
