@@ -13,12 +13,15 @@ class MySQLConnection:
         with self.connection.cursor() as cursor:
             try:
                 executable = cursor.execute(query, data)
-                if query[0:6].lower() == 'select':
-                    result = cursor.fetchall()
-                    return result
-                elif query[0:6].lower() == 'insert':
+                # use matching to find if find()
+                # if query[0:6].lower() == 'select':
+                if query.lower().find("insert") >= 0:
                     self.connection.commit()
                     return cursor.lastrowid
+                elif query.lower().find("select") >= 0:
+                    result = cursor.fetchall()
+                    return result
+                # elif query[0:6].lower() == 'insert':
                 else:
                     self.connection.commit()
             except:

@@ -7,7 +7,6 @@ messages = Messages()
 
 @app.route("/")
 def index():
-    # return "Index"
     return users.index()
 
 @app.route("/createUser", methods=['POST'])

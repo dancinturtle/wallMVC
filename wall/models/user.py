@@ -7,6 +7,7 @@ bcrypt = Bcrypt(app)
 
 
 class User:
+
     def create(self, data):
         passRegex = re.compile(r'^(?=.{8,15}$)(?=.*[A-Z])(?=.*[0-9]).*$')
         emailRegex = re.compile(r'^[a-zA-Z0-9.+_-]+@[a-zA-Z0-9._-]+\.[a-zA-Z]+$')
@@ -44,9 +45,6 @@ class User:
                 else:
                     errors.append("We're sorry, you could not be registered at this moment")
                     return (False, errors)
-    
-    def retrieveOneById(self, id):
-        mysql.query_db("SELECT * FROM users WHERE id=%s;", id)
     
     def retrieveOneByEmail(self, data):
         print("using this data", data['password'])
