@@ -1,17 +1,18 @@
 import pymysql.cursors
 
 class MySQLConnection:
-    def __init__(self):
+    def __init__(self, db):
         connection = pymysql.connect(host='localhost',
                                     user='root',
                                     password='rootroot',
-                                    db='wall',
+                                    db=db,
                                     charset='utf8mb4',
                                     cursorclass=pymysql.cursors.DictCursor)
         self.connection = connection
     def query_db(self, query, data=None):
         with self.connection.cursor() as cursor:
             try:
+                # executable = cursor.execute(query, data)
                 executable = cursor.execute(query, data)
                 # use matching to find if find()
                 # if query[0:6].lower() == 'select':
@@ -24,9 +25,9 @@ class MySQLConnection:
                 # elif query[0:6].lower() == 'insert':
                 else:
                     self.connection.commit()
-            except:
-                print("Something went wrong")
+            except Exception as e:
+                print("Something went wrong", e)
                 return False
 
-def connectToMySQL():
-    return MySQLConnection()
+def connectToMySQL(db):
+    return MySQLConnection(db)
